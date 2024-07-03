@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import streamlit.components.v1 as components
 from hesaplama import hesaplama
 st.set_page_config(
     page_title="Dengesizlik",
@@ -7,7 +8,6 @@ st.set_page_config(
     layout="wide",
 )
 
-# org_adet = st.sidebar.number_input("Organizasyon Adedi", 2,10,3,1)
 ptf = st.sidebar.number_input("PTF (TL/MWh)", 0,3000,2000,1)
 smf = st.sidebar.number_input("SMF (TL/MWh)", 0, 3000, 1000,1)
 do_orani = 0.2, 
@@ -67,7 +67,7 @@ st.markdown("### Sonuçlar")
 if uploaded_file is not None and check_error == True:
     hesaplanan = hesaplama(df, ptf, smf, do_orani, dengesizlik_yuzde)
 
-    with st.expander("Toplu Detaylar Toplu"):
+    with st.expander("Toplu Detaylar"):
         st.dataframe(hesaplanan.style.format(precision=2,thousands=".",decimal="."), use_container_width=True)
         st.write("""
  - EDM P: enerji dengesizliğinin giderilmesine yönelik sisteme sattığı enerji miktarını (MWh),
@@ -133,3 +133,11 @@ if uploaded_file is not None and check_error == True:
 
 else:
     st.write("Dosya yüklenmedi.")
+
+
+## Footer
+st.markdown("## ")
+st.markdown("## ")
+HtmlFile = open("./footer.html", 'r', encoding='utf-8')
+footer = HtmlFile.read() 
+components.html(footer, height = 400)
