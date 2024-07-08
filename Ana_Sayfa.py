@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import streamlit.components.v1 as components
 from hesaplama import hesaplama
+import plotly.graph_objects as go
+
 st.set_page_config(
     page_title="Dengesizlik",
     page_icon=":bar_chart:",
@@ -130,6 +132,61 @@ if uploaded_file is not None and check_error == True:
         st.write(f"""
  - Toplam Sinerji (MWh): {önceki_sinerji:,.2f}
  - Toplam Tutar (TL): {önceki_total_sinerji_tl:,.2f}""".replace(".","_").replace(",",".").replace("_",","))
+   
+
+    figure_cols = st.columns((6,4))
+    with figure_cols[0]:
+
+        fig = go.Figure(data=[
+
+            go.Bar(marker_color = "lightgray", name='PH (MWh)', x=hesaplanan.index, y=(hesaplanan["Sinerji (MWh)"].apply(lambda x: 1 if x >0 else -1)*hesaplanan["PH (MWh)"]).tolist(), opacity=0.8,),
+            go.Bar(marker_color = "#48acb4", name='BEDM (MWh)', x=hesaplanan.index, y=hesaplanan["BEDM (MWh)"].tolist(), width=0.5, opacity=0.8),
+            go.Bar(marker_color = "#c8cc24", name='Sinerji (MWh)', x=hesaplanan.index, y=hesaplanan["Sinerji (MWh)"].tolist(), opacity=0.8),
+        ])
+        # Change the bar mode
+        fig.update_layout(
+            barmode='overlay',
+            hovermode="x unified",
+            xaxis_tickmode = 'linear',
+            yaxis_tickformat = ',.1f',
+            xaxis_title="<b>Org. ID</b>",
+            yaxis_title="<b>MWh</b>",
+            margin=dict(l=0, r=0, t=100, b=0),
+            legend=dict(
+    orientation="h",
+    yanchor="bottom",
+    y=1.02,
+    xanchor="right",
+    x=1)
+
+
+    )
+        st.plotly_chart(fig, use_container_width=True)
+
+    with figure_cols[1]:
+
+        fig2 = go.Figure(data=[
+            go.Bar(marker_color = "#48acb4", name='Sinerji (TL)', x=["Mevcut Durum", "Yeni Hesaplama"], y= [önceki_total_sinerji_tl, total_sinerji_tl], opacity=0.8, width = 0.25),
+            go.Bar(marker_color = "#c8cc24", name='Toplam Pozitif Cezalı Tutarı (TL)', x=["Mevcut Durum", "Yeni Hesaplama"], y=[0,total_pozitif_cezalı_sinerji], opacity=0.8, width = 0.25),
+            go.Bar(marker_color = "#d41c4c", name='Toplam Negatif Cezalı Tutarı (TL)', x=["Mevcut Durum", "Yeni Hesaplama"], y=[0,total_negatif_cezalı_sinerji], opacity=0.8, width = 0.25),
+        ])
+        # Change the bar mode
+        fig2.update_layout(
+            barmode='group',
+            hovermode="x unified",
+            # xaxis_tickmode = 'linear',
+            yaxis_tickformat = ',.1f',
+            yaxis_title="<b>TL</b>",
+            margin=dict(l=0, r=0, t=100, b=0),
+            legend=dict(
+    orientation="h",
+    yanchor="bottom",
+    y=1.02,
+    xanchor="right",
+    x=1),
+
+    )
+        st.plotly_chart(fig2, use_container_width=True)
 
 else:
     st.write("Dosya yüklenmedi.")
