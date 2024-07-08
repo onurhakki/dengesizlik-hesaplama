@@ -149,6 +149,7 @@ if uploaded_file is not None and check_error == True:
             hovermode="x unified",
             xaxis_tickmode = 'linear',
             yaxis_tickformat = ',.1f',
+            separators=",..,",
             xaxis_title="<b>Org. ID</b>",
             yaxis_title="<b>MWh</b>",
             margin=dict(l=0, r=0, t=100, b=0),
@@ -166,9 +167,11 @@ if uploaded_file is not None and check_error == True:
     with figure_cols[1]:
 
         fig2 = go.Figure(data=[
-            go.Bar(marker_color = "#48acb4", name='Sinerji (TL)', x=["Mevcut Durum", "Yeni Hesaplama"], y= [önceki_total_sinerji_tl, total_sinerji_tl], opacity=0.8, width = 0.25),
-            go.Bar(marker_color = "#c8cc24", name='Toplam Pozitif Cezalı Tutarı (TL)', x=["Mevcut Durum", "Yeni Hesaplama"], y=[0,total_pozitif_cezalı_sinerji], opacity=0.8, width = 0.25),
-            go.Bar(marker_color = "#d41c4c", name='Toplam Negatif Cezalı Tutarı (TL)', x=["Mevcut Durum", "Yeni Hesaplama"], y=[0,total_negatif_cezalı_sinerji], opacity=0.8, width = 0.25),
+            go.Bar(marker_color = "lightgray", name='Toplam Tutar (TL)', x=["Mevcut Durum", "Yeni Hesaplama"], y=[önceki_total_sinerji_tl,total_sinerji_tl+total_cezalı_sinerji], opacity=0.8, width = 0.75),
+            go.Bar(marker_color = "#48acb4", name='Sinerji (TL)', x=["Mevcut Durum", "Yeni Hesaplama"], y= [önceki_total_sinerji_tl, total_sinerji_tl], offset = -0.375, opacity=0.8,  width = 0.25),
+
+            go.Bar(marker_color = "#c8cc24", name='Toplam Pozitif Cezalı Tutarı (TL)', x=["Mevcut Durum", "Yeni Hesaplama"], y=[0,total_pozitif_cezalı_sinerji], offset = -0.125, opacity=0.8, width = 0.25),
+            go.Bar(marker_color = "#d41c4c", name='Toplam Negatif Cezalı Tutarı (TL)', x=["Mevcut Durum", "Yeni Hesaplama"], y=[0,total_negatif_cezalı_sinerji], offset = 0.125, opacity=0.8, width = 0.25),
         ])
         # Change the bar mode
         fig2.update_layout(
@@ -177,6 +180,7 @@ if uploaded_file is not None and check_error == True:
             # xaxis_tickmode = 'linear',
             yaxis_tickformat = ',.1f',
             yaxis_title="<b>TL</b>",
+            separators=",..,",
             margin=dict(l=0, r=0, t=100, b=0),
             legend=dict(
     orientation="h",
